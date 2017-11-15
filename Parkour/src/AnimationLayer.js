@@ -2,8 +2,13 @@ var AnimationLayer = cc.Layer.extend({
   spriteSheet:null,
   runningAction:null,
   sprite:null,
+  space:null,
+  body:null,
+  shape:null,
+
   ctor:function(){
     this._super();
+    this.space = space;
     this.init();
   },
 
@@ -23,8 +28,18 @@ var AnimationLayer = cc.Layer.extend({
 
     var animation = new cc.Animation(animFrames, 0.1);
     this.runningAction = new cc.RepeatForever(new cc.Animate(animation));
-    this.sprite = new cc.Sprite("#runner0.png");
-    this.sprite.attr({x:80, y:85});
+
+    this.sprite = new cc.PhysicsSprite("#runner0.png");
+    var contentSize = this.sprite.getContentSize();
+
+    this.body = new cp.Body(1, cp.momentforBox(1, contentSize.width, contentSize.height));
+    this.body.p = cc.p(g_runnerStartx, g_groundHeight + contentSize.height / 2);
+    this.body.applyImpulse(cp.v(150, 0), cp.v(0, 0));
+    this.space.addBody(this.body);
+    this.shape = new cp.BoxShape(this.body, contentSize.width - 14, contentSize.height);
+    this.space.addShape(this.shape);
+    this.sprite.setBody(this.body);
+
     this.sprite.runAction(this.runningAction);
     this.spriteSheet.addChild(this.sprite);
   }
