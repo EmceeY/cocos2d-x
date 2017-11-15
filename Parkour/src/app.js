@@ -23,7 +23,6 @@ var MenuLayer = cc.Layer.extend({
     menu.setPosition(centerpos);
     this.addChild(menu);
   },
-
   onPlay : function(){
     cc.log("==onplay clicked");
     cc.director.runScene(new PlayScene());

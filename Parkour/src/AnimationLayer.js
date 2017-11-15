@@ -6,12 +6,14 @@ var AnimationLayer = cc.Layer.extend({
   body:null,
   shape:null,
 
-  ctor:function(){
+  ctor:function(space){
     this._super();
     this.space = space;
     this.init();
-  },
 
+    this._debugNode = new cc.PhysicsDebugNode(this.space);
+    this.addChild(this._debugNode, 10);
+  },
   init:function(){
     this._super();
 
@@ -32,8 +34,8 @@ var AnimationLayer = cc.Layer.extend({
     this.sprite = new cc.PhysicsSprite("#runner0.png");
     var contentSize = this.sprite.getContentSize();
 
-    this.body = new cp.Body(1, cp.momentforBox(1, contentSize.width, contentSize.height));
-    this.body.p = cc.p(g_runnerStartx, g_groundHeight + contentSize.height / 2);
+    this.body = new cp.Body(1, cp.momentForBox(1, contentSize.width, contentSize.height));
+    this.body.p = cc.p(g_runnerStartX, g_groundHeight + contentSize.height / 2);
     this.body.applyImpulse(cp.v(150, 0), cp.v(0, 0));
     this.space.addBody(this.body);
     this.shape = new cp.BoxShape(this.body, contentSize.width - 14, contentSize.height);
@@ -42,5 +44,8 @@ var AnimationLayer = cc.Layer.extend({
 
     this.sprite.runAction(this.runningAction);
     this.spriteSheet.addChild(this.sprite);
+  },
+  getEyeX : function(){
+    return this.sprite.getPositionX() - g_runnerStartX;
   }
 });
